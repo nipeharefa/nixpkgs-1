@@ -96,6 +96,7 @@
       google-cloud-sdk
       nodejs-16_x
       gitlab-runner
+      git-crypt
       comby
       python3
       pkg-config
