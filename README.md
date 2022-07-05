@@ -87,32 +87,39 @@ git clone https://github.com/r17x/nixpkgs ~/.config/nixpkgs
 
 ```
 
-- Change directory to `~/.config/nixpkgs`
+#### Build home-manager
+-
+#### Build Darwin System
+
+Assume r17x/nixpkgs have been cloned. Then, you can run build for darwin system with this command
+
+Machine Name:
+* RG 
+* eR17
+
+**Build**
 
 ```console
-cd ~/.config/nixpkgs
+// replace MACHINE_NAME 
+// nix build ~/.config/nixpkgs#darwinConfigurations.[MACHINE_NAME].system
+
+nix build ~/.config/nixpkgs#darwinConfigurations.eR17.system
 ```
 
-- Run Build  
-  command for build: `nix build .#darwinConfigurations.[NAME].system`  
-  Available for `[NAME]`:
-  - `RG`
+every build have an output called "result" (directory) and need to apply
+
+**Switch**
 
 ```console
-nix build .#darwinConfigurations.RG.system
+
+// ./result/sw/bin/darwin-rebuild switch --flake .#[MACHINE_NAME]
+
+./result/sw/bin/darwin-rebuild switch --flake .#eR17
 ```
 
-- Apply from `Result`  
-  command for apply the result: `./result/sw/bin/darwin-rebuild switch --flake .#[NAME]`  
-  Available for `[NAME]`:
-  - `RG`  
-    After `Run Build` you can apply from `./result` with this command
 
-```console
-./result/sw/bin/darwin-rebuild switch --flake .#RG
-```
-
-- Done 🚀🎉
+## Command Tips
+- 
 
 ## Acknowledgement
 
