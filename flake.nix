@@ -19,9 +19,13 @@
     # Other sources
     flake-compat = { url = "github:edolstra/flake-compat"; flake = false; };
     flake-utils.url = "github:numtide/flake-utils";
+
+    # secret management
+    agenix.url = "github:ryantm/agenix";
+    agenix.inputs.nixpkgs.follows = "nixpkgs-unstable";
   };
 
-  outputs = { self, darwin, home-manager, flake-utils,  ... }@inputs:
+  outputs = { self, darwin, home-manager, flake-utils, agenix, ... }@inputs:
     let
       inherit (darwin.lib) darwinSystem;
       inherit (inputs.nixpkgs-unstable.lib) attrValues makeOverridable optionalAttrs singleton;
@@ -29,7 +33,13 @@
       # Configuration for `nixpkgs`
       nixpkgsConfig = {
         config = { allowUnfree = true; };
-        overlays = attrValues self.overlays ++ singleton (
+        overlays = attrValues self.overlays
+          ++ singleton (
+          final: prev: {
+            agenix = agenix.defaultPackage.${prev.stdenv.system};
+          }
+        )
+          ++ singleton (
           # Sub in x86 version of packages that don't build on Apple Silicon yet
           final: prev: (optionalAttrs (prev.stdenv.system == "aarch64-darwin") {
             inherit (final.pkgs-x86)
@@ -64,8 +74,8 @@
             nix.nixPath = { nixpkgs = "${primaryUser.nixConfigDirectory}/nixpkgs.nix"; };
             # `home-manager` config
             users.users.${primaryUser.username} = {
-            home = "/Users/${primaryUser.username}";
-            shell = pkgs.fish;
+              home = "/Users/${primaryUser.username}";
+              shell = pkgs.fish;
             };
             home-manager.useGlobalPkgs = true;
             home-manager.users.${primaryUser.username} = {
@@ -144,6 +154,7 @@
       };
 
       commonModules = {
+        secret = agenix.nixosModule;
         system = import ./system/system.nix;
         system-shells = import ./system/shells.nix;
         users-primaryUser = import ./modules/user.nix;
@@ -153,7 +164,7 @@
       # `nix-darwin` modules that are pending upstream, or patched versions waiting on upstream
       # fixes.
       darwinModules = {
-        system-darwin = import ./system/darwin/system.nix; 
+        system-darwin = import ./system/darwin/system.nix;
         system-darwin-packages = import ./system/darwin/packages.nix;
         system-darwin-security-pam = import ./system/darwin/security.nix;
         system-darwin-gpg = import ./system/darwin/gpg.nix;

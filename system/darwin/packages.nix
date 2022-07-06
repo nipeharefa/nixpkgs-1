@@ -12,6 +12,8 @@
     iterm2
     dnscrypt-proxy2
     terminal-notifier
+    # agenix.defaultPackage.${builtin.currentSystem}
+    agenix
   ];
 
   # something wrong

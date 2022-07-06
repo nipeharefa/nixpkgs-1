@@ -3,6 +3,7 @@
 let
   mkAfter = lib.mkAfter;
   shellAliases = with pkgs; {
+    age = "${rage}/bin/rage";
     # Nix related
     drb = "darwin-rebuild build --flake ~/.config/nixpkgs/";
     drs = "darwin-rebuild switch --flake ~/.config/nixpkgs/";
