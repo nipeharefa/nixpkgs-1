@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 {
   # https://github.com/nix-community/home-manager/issues/423
   programs.nix-index.enable = true;
@@ -49,4 +49,8 @@
     keyboard.remapCapsLockToEscape = true;
     # Add ability to used TouchID for sudo authentication
   };
+
+
+  # Secrets management file
+  age.secrets.r17.file = "${config.home.user-info.nixConfigDirectory}/secrets/r17.age";
 }
